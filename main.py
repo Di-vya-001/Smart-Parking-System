@@ -27,16 +27,22 @@ g3, r3 = Pin(25, Pin.OUT), Pin(26, Pin.OUT)
 servo = PWM(Pin(27), freq=50)
 
 # IR Sensor (Entry Detection)
-ir_sensor = Pin(14, Pin.IN, Pin.PULL_UP)
+ir_sensor = Pin(14)
 
 # ===============================
 # FUNCTIONS
 # ===============================
 
+def set_servo_angle(angle):
+    min_ns = 500_000
+    max_ns = 2_500_000
+    pulse = min_ns + int((angle / 180) * (max_ns - min_ns))
+    servo.duty_ns(pulse)
+
 def open_gate():
-    servo.duty(40)   # Open (adjust if needed)
+    set_servo_angle(90)  # Gate opens
     time.sleep(2)
-    servo.duty(115)  # Close (adjust if needed)
+    set_servo_angle(0)   # Gate closes
 
 def check_slot(sensor, green_led, red_led):
     try:
